@@ -18,7 +18,7 @@
 
 - 指示がない限り、Tailwind CSS でUIを作成する
 - Tailwind CSS + Shadcn UI を使用する
-- 推奨コンポーネント:
+- 特別な指定がない限り、Shadcn UIをインポートして下のコンポーネントを使用する:
   - ボタン (Button)
   - 入力フォーム (Input)
   - モーダル (Modal)
