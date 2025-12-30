@@ -16,8 +16,16 @@
 
 ## UI
 
-- 指示がない限り、MUIでUIを作成する
+- 指示がない限り、Tailwind CSS でUIを作成する
 - Tailwind CSS + Shadcn UI を使用する
+- 推奨コンポーネント:
+  - ボタン (Button)
+  - 入力フォーム (Input)
+  - モーダル (Modal)
+  - ドロップダウン (Dropdown)
+  - トースト通知 (Toast)
+  - タブ (Tabs)
+  - オートコンプリート (Autocomplete)
 - フォームは react-hook-form + zod を使用する
 
 ## Copilot への指示
