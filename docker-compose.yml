@@ -6,8 +6,6 @@ services:
     volumes:
       # ソースコードをバインドマウント
       - .:/usr/src/app
-      # node_modulesは永続化（パフォーマンス向上）
-      - node_modules:/usr/src/app/node_modules
     environment:
       - NODE_ENV=development
     env_file:

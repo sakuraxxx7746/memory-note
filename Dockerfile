@@ -8,10 +8,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # 依存関係をインストール
-RUN npm install
+RUN npm cache clean --force && npm install
 
 # アプリケーションのソースをコピー
-# COPY . .
+COPY . .
 
 # Next.jsの開発サーバーポート
 EXPOSE 3000
