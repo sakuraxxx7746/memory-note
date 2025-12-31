@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # 依存関係をインストール
-RUN npm cache clean --force && npm install
+RUN npm install
 
 # アプリケーションのソースをコピー
 COPY . .
