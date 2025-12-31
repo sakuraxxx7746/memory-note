@@ -3,6 +3,7 @@
 ## 使用技術
 
 - Next.js App Router（TypeScript）
+- すべてのページはclientページとして使用する
 - Supabase をバックエンドとして使用
 - Supabase クライアント：`lib/supabase/client.ts`
 <!-- - Supabase 型定義：`src/types/supabase.ts` -->
