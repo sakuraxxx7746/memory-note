@@ -1,5 +1,6 @@
 services:
   app:
+    container_name: memory-note-app
     build: .
     ports:
       - '3000:3000'
@@ -9,6 +10,7 @@ services:
       - /usr/src/app/node_modules
     environment:
       - NODE_ENV=development
+      - NEXT_DISABLE_TURBOPACK=1
     env_file:
       - .env.local
     stdin_open: true
