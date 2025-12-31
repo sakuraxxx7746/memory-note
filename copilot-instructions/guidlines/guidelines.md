@@ -16,16 +16,8 @@
 
 ## UI
 
-- 指示がない限り、Tailwind CSS でUIを作成する
-- Tailwind CSS + Shadcn UI を使用する
-- 特別な指定がない限り、Shadcn UIをインポートして下のコンポーネントを使用する:
-  - ボタン (Button)
-  - 入力フォーム (Input)
-  - モーダル (Modal)
-  - ドロップダウン (Dropdown)
-  - トースト通知 (Toast)
-  - タブ (Tabs)
-  - オートコンプリート (Autocomplete)
+- 指示がない限り、Tailwind CSS Shadcn UI でUIを作成する
+- Shadcn UIはcomponents/uiにあるものを使用する
 - フォームは react-hook-form + zod を使用する
 
 ## Copilot への指示
