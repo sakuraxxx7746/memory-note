@@ -1,6 +1,14 @@
 'use client'
 
 import { Tables } from '@/lib/types/supabase'
+import {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from '@/components/ui/card'
 
 interface postCardProps {
   key?: number
@@ -8,5 +16,17 @@ interface postCardProps {
 }
 
 export default function PostCard({ post }: postCardProps) {
-  return <div>{post?.title}</div>
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{post?.title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>{post?.content}</p>
+      </CardContent>
+      <CardFooter>
+        <CardDescription>更新日: {post?.updated_at}</CardDescription>
+      </CardFooter>
+    </Card>
+  )
 }

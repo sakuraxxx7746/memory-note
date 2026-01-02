@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { PostModal } from '@/components/post-modal'
+import { PostModal } from '@/components/modal/post-modal'
 import { createClient } from '@/lib/supabase/client'
 import PostCard from '@/components/card/post-card'
 import { Tables } from '@/lib/types/supabase'
+import { getPosts } from '@/lib/api/getPosts'
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -13,14 +14,16 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const supabase = createClient()
-      const { data, error } = await supabase.from('posts').select('*')
-      if (error) {
-        console.error(error)
+      const result = await getPosts()
+      
+      if (!result.success) {
+        // エラー時は error プロパティのみ存在
+        console.error('投稿の取得に失敗:', result.error)
         return
       }
-      console.log(data)
-      setPosts(data || [])
+      
+      // 成功時は data プロパティのみ存在
+      setPosts(result.data || [])
     }
     fetchPosts()
   }, [])
