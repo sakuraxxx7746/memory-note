@@ -1,12 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { PostModal } from '@/components/post-modal'
 import { createClient } from '@/lib/supabase/client'
+import PostCard from '@/components/card/post-card'
+import { Tables } from '@/lib/types/supabase'
 
-export default function Page() {
+export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [posts, setPosts] = useState<Tables<'posts'>[]>([])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const supabase = createClient()
+      const { data, error } = await supabase.from('posts').select('*')
+      if (error) {
+        console.error(error)
+        return
+      }
+      console.log(data)
+      setPosts(data || [])
+    }
+    fetchPosts()
+  }, [])
 
   const handlePost = async (title: string, content: string) => {
     const supabase = createClient()
@@ -21,7 +38,6 @@ export default function Page() {
       return
     }
 
-    // Supabaseに投稿を保存（user_idを含める）
     const { error } = await supabase
       .from('posts')
       .insert([{ title, content, user_id: user.id }])
@@ -31,7 +47,11 @@ export default function Page() {
       return
     }
 
-    // 保存成功後、モーダルを閉じる
+    // 保存成功後、投稿一覧を再取得
+    const { data } = await supabase.from('posts').select('*')
+    setPosts(data || [])
+
+    // モーダルを閉じる
     setIsModalOpen(false)
     alert('投稿が保存されました')
   }
@@ -41,6 +61,9 @@ export default function Page() {
       <h1 className="text-2xl font-bold mb-4">ダッシュボード</h1>
       <Button onClick={() => setIsModalOpen(true)}>＋</Button>
 
+      {posts.map(post => (
+        <PostCard key={post.id} post={post} />
+      ))}
       <PostModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}

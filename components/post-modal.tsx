@@ -14,16 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
-
-const postSchema = z.object({
-  title: z.string().min(1, '投稿タイトルを入力してください'),
-  content: z
-    .string()
-    .min(1, '内容を入力してください')
-    .max(1000, '内容は1000文字以内で入力してください'),
-})
-
-type PostFormValues = z.infer<typeof postSchema>
+import { postSchema, PostFormValues } from '@/lib/schemas/post'
 
 interface PostModalProps {
   open: boolean
