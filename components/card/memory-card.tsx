@@ -24,8 +24,8 @@ export default function MemoryCard({ memory, onEdit }: memoryCardProps) {
       <CardHeader>
         <CardTitle>{memory.title}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <p>{memory.content}</p>
+      <CardContent className="whitespace-pre-wrap">
+        {memory.content}
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-2">
         <CardDescription>
