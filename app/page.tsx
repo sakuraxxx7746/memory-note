@@ -51,8 +51,7 @@ export default function Dashboard() {
     <main className="p-8">
       <h1 className="text-2xl font-bold mb-4">ダッシュボード</h1>
       <Button onClick={() => setIsModalOpen(true)}>＋</Button>
-
-      <div className="md:flex gap-4 flex-wrap max-width[70%]">
+      <div className="columns-1 md:columns-3 md:max-w-[85%] xl:columns-4 gap-2">
         {posts.map(post => (
           <PostCard key={post.id} post={post} />
         ))}

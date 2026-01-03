@@ -17,7 +17,7 @@ interface postCardProps {
 
 export default function PostCard({ post }: postCardProps) {
   return (
-    <Card className="mt-2 md:max-w-75">
+    <Card className="break-inside-avoid mb-2">
       <CardHeader>
         <CardTitle>{post?.title}</CardTitle>
       </CardHeader>
