@@ -29,9 +29,8 @@ export default function MemoryCard({ memory, onEdit }: memoryCardProps) {
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-2">
         <CardDescription>
-          更新日:
           {memory.updated_at
-            ? format(new Date(memory.updated_at), 'yyyy年MM月dd日')
+            ? format(new Date(memory.updated_at), 'yyyy年MM月dd日') + '更新'
             : '吉日'}
         </CardDescription>
         <Button variant="outline" size="sm" onClick={() => onEdit(memory)}>
