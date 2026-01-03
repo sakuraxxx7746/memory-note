@@ -61,7 +61,7 @@ export function PostModal({
     onPost(values)
 
     // 投稿後、フォームをリセット
-    form.reset()
+    // form.reset()
   }
 
   return (
