@@ -1,0 +1,84 @@
+-- メモリーをハッシュタグと共に保存するプロシージャ
+-- 新規作成と更新の両方を処理し、ハッシュタグの抽出・保存・マッピングを行う
+
+CREATE OR REPLACE FUNCTION save_memory_with_hashtags(
+  p_memory_id UUID,
+  p_title TEXT,
+  p_content TEXT,
+  p_user_id UUID
+)
+RETURNS JSON
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_memory_id UUID;
+  v_hashtag_name TEXT;
+  v_hashtag_id UUID;
+  v_hashtag_names TEXT[];
+BEGIN
+  -- メモリーの保存（新規作成 or 更新）
+  IF p_memory_id IS NULL THEN
+    -- 新規作成
+    INSERT INTO memories (title, content, user_id)
+    VALUES (p_title, p_content, p_user_id)
+    RETURNING id INTO v_memory_id;
+  ELSE
+    -- 更新
+    UPDATE memories
+    SET title = p_title,
+        content = p_content,
+        updated_at = NOW()
+    WHERE id = p_memory_id
+      AND user_id = p_user_id;
+
+    IF NOT FOUND THEN
+      RETURN json_build_object(
+        'success', false,
+        'error', 'メモリーが見つかりません。'
+      );
+    END IF;
+
+    v_memory_id := p_memory_id;
+
+    -- 既存のハッシュタグマッピングを削除
+    DELETE FROM memory_hashtag_mapping
+    WHERE memory_id = v_memory_id;
+  END IF;
+
+  -- ハッシュタグの抽出（#の後、半角スペース・全角スペース・改行以外の文字）
+  SELECT ARRAY(
+    SELECT DISTINCT unnest(
+      regexp_matches(p_content, '#([^\s　\n]+)', 'g')
+    )
+  ) INTO v_hashtag_names;
+
+  -- ハッシュタグの保存とマッピング
+  FOREACH v_hashtag_name IN ARRAY v_hashtag_names
+  LOOP
+    -- ハッシュタグをupsert（既存なら取得、新規なら作成）
+    INSERT INTO hashtags (name)
+    VALUES (v_hashtag_name)
+    ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+    RETURNING id INTO v_hashtag_id;
+
+    -- マッピングテーブルに登録
+    INSERT INTO memory_hashtag_mapping (memory_id, hashtag_id)
+    VALUES (v_memory_id, v_hashtag_id);
+  END LOOP;
+
+  -- 成功を返す
+  RETURN json_build_object(
+    'success', true,
+    'memory_id', v_memory_id
+  );
+
+EXCEPTION
+  WHEN OTHERS THEN
+    -- エラー時は自動的にロールバックされる
+    RETURN json_build_object(
+      'success', false,
+      'error', SQLERRM
+    );
+END;
+$$;
