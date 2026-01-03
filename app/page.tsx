@@ -7,7 +7,7 @@ import PostCard from '@/components/card/post-card'
 import { Tables } from '@/lib/types/supabase'
 import { getPosts } from '@/lib/api/getPosts'
 import { createPost } from '@/lib/api/createPost'
-import { postSchema, PostFormValues } from '@/lib/schemas/post'
+import { PostFormValues } from '@/lib/schemas/post'
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -52,9 +52,12 @@ export default function Dashboard() {
       <h1 className="text-2xl font-bold mb-4">ダッシュボード</h1>
       <Button onClick={() => setIsModalOpen(true)}>＋</Button>
 
-      {posts.map(post => (
-        <PostCard key={post.id} post={post} />
-      ))}
+      <div className="md:flex gap-4 flex-wrap max-width[70%]">
+        {posts.map(post => (
+          <PostCard key={post.id} post={post} />
+        ))}
+      </div>
+
       <PostModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}

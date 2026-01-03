@@ -17,7 +17,7 @@ interface postCardProps {
 
 export default function PostCard({ post }: postCardProps) {
   return (
-    <Card>
+    <Card className="mt-2 md:max-w-75">
       <CardHeader>
         <CardTitle>{post?.title}</CardTitle>
       </CardHeader>
