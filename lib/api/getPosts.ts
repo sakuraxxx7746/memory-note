@@ -5,7 +5,10 @@ import { Tables } from '@/lib/types/supabase'
 export async function getPosts(): Promise<ApiResponse<Tables<'posts'>[]>> {
   const supabase = createClient()
 
-  const { data, error } = await supabase.from('posts').select('*')
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .order('updated_at', { ascending: false })
   if (error) {
     return { success: false, error: error.message }
   }

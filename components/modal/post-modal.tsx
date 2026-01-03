@@ -18,7 +18,7 @@ import { postSchema, PostFormValues } from '@/lib/schemas/post'
 interface PostModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onPost: (title: string, content: string) => void
+  onPost: (values: PostFormValues) => void
   onCancel?: () => void
 }
 
@@ -44,7 +44,7 @@ export function PostModal({
 
   const handleSubmit = (values: PostFormValues) => {
     // 親にtitleとcontentを返す
-    onPost(values.title, values.content)
+    onPost(values)
 
     // 投稿後、フォームをリセット
     form.reset()

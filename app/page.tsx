@@ -3,60 +3,48 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { PostModal } from '@/components/modal/post-modal'
-import { createClient } from '@/lib/supabase/client'
 import PostCard from '@/components/card/post-card'
 import { Tables } from '@/lib/types/supabase'
 import { getPosts } from '@/lib/api/getPosts'
+import { createPost } from '@/lib/api/createPost'
+import { postSchema, PostFormValues } from '@/lib/schemas/post'
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [posts, setPosts] = useState<Tables<'posts'>[]>([])
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const result = await getPosts()
-      
-      if (!result.success) {
-        // エラー時は error プロパティのみ存在
-        console.error('投稿の取得に失敗:', result.error)
-        return
-      }
-      
-      // 成功時は data プロパティのみ存在
-      setPosts(result.data || [])
+  const fetchPosts = async () => {
+    const result = await getPosts()
+
+    if (!result.success) {
+      console.error('投稿の取得に失敗:', result.error)
+      return
     }
+
+    setPosts(result.data || [])
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchPosts()
   }, [])
 
-  const handlePost = async (title: string, content: string) => {
-    const supabase = createClient()
+  const handlePost = async (values: PostFormValues) => {
+    const result = await createPost({
+      title: values.title,
+      content: values.content,
+    })
 
-    // 現在のユーザーを取得
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      alert('ログインが必要です')
+    if (!result.success) {
+      alert(`投稿の保存に失敗しました: ${result.error}`)
       return
     }
 
-    const { error } = await supabase
-      .from('posts')
-      .insert([{ title, content, user_id: user.id }])
-
-    if (error) {
-      alert(`投稿の保存に失敗しました: ${error.message}`)
-      return
-    }
-
-    // 保存成功後、投稿一覧を再取得
-    const { data } = await supabase.from('posts').select('*')
-    setPosts(data || [])
+    // 投稿一覧を再取得
+    await fetchPosts()
 
     // モーダルを閉じる
     setIsModalOpen(false)
-    alert('投稿が保存されました')
   }
 
   return (
