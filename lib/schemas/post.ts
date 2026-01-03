@@ -1,6 +1,7 @@
 import * as z from 'zod'
 
 export const postSchema = z.object({
+  id: z.number().optional(),
   title: z.string().min(1, '投稿タイトルを入力してください'),
   content: z
     .string()

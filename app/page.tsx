@@ -6,12 +6,13 @@ import { PostModal } from '@/components/modal/post-modal'
 import PostCard from '@/components/card/post-card'
 import { Tables } from '@/lib/types/supabase'
 import { getPosts } from '@/lib/api/getPosts'
-import { createPost } from '@/lib/api/createPost'
+import { savePost } from '@/lib/api/savePost'
 import { PostFormValues } from '@/lib/schemas/post'
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [posts, setPosts] = useState<Tables<'posts'>[]>([])
+  const [post, setPost] = useState<Tables<'posts'> | null>(null)
 
   const fetchPosts = async () => {
     const result = await getPosts()
@@ -29,8 +30,14 @@ export default function Dashboard() {
     fetchPosts()
   }, [])
 
+  const handlEdit = (post: Tables<'posts'>) => {
+    setPost(post)
+    setIsModalOpen(true)
+  }
+
   const handlePost = async (values: PostFormValues) => {
-    const result = await createPost({
+    const result = await savePost({
+      id: values?.id,
       title: values.title,
       content: values.content,
     })
@@ -53,9 +60,9 @@ export default function Dashboard() {
       <Button className="mb-4" onClick={() => setIsModalOpen(true)}>
         忘れたくないものがあるときにすることをここで
       </Button>
-      <div className="columns-1 md:columns-3 md:max-w-[85%] xl:columns-4 gap-2">
+      <div className="columns-1 md:columns-3 xl:columns-4 gap-4">
         {posts.map(post => (
-          <PostCard key={post.id} post={post} />
+          <PostCard onEdit={handlEdit} key={post.id} post={post} />
         ))}
       </div>
 
@@ -63,6 +70,7 @@ export default function Dashboard() {
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
         onPost={handlePost}
+        post={post}
       />
     </main>
   )
