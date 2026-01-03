@@ -14,11 +14,29 @@ export type Database = {
   }
   public: {
     Tables: {
-      posts: {
+      hashtags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
+      memories: {
         Row: {
           content: string | null
           created_at: string
-          id: number
+          id: string
           title: string | null
           updated_at: string | null
           user_id: string
@@ -26,7 +44,7 @@ export type Database = {
         Insert: {
           content?: string | null
           created_at?: string
-          id?: number
+          id?: string
           title?: string | null
           updated_at?: string | null
           user_id: string
@@ -34,12 +52,48 @@ export type Database = {
         Update: {
           content?: string | null
           created_at?: string
-          id?: number
+          id?: string
           title?: string | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      memory_hashtag_mapping: {
+        Row: {
+          created_at: string | null
+          hashtag_id: string
+          id: number
+          memory_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          hashtag_id: string
+          id?: number
+          memory_id?: string
+        }
+        Update: {
+          created_at?: string | null
+          hashtag_id?: string
+          id?: number
+          memory_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_hashtag_mapping_hashtag_id_fkey"
+            columns: ["hashtag_id"]
+            isOneToOne: true
+            referencedRelation: "hashtags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "memory_hashtag_mapping_memory_id_fkey"
+            columns: ["memory_id"]
+            isOneToOne: true
+            referencedRelation: "memories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

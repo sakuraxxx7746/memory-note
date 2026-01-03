@@ -2,11 +2,13 @@ import { createClient } from '@/lib/supabase/client'
 import { ApiResponse } from '@/lib/types/api'
 import { Tables } from '@/lib/types/supabase'
 
-export async function getPosts(): Promise<ApiResponse<Tables<'posts'>[]>> {
+export async function getMemories(): Promise<
+  ApiResponse<Tables<'memories'>[]>
+> {
   const supabase = createClient()
 
   const { data, error } = await supabase
-    .from('posts')
+    .from('memories')
     .select('*')
     .order('updated_at', { ascending: false })
   if (error) {

@@ -2,41 +2,41 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { PostModal } from '@/components/modal/post-modal'
-import PostCard from '@/components/card/post-card'
+import { MemoryModal } from '@/components/modal/memory-modal'
+import MemoryCard from '@/components/card/memory-card'
 import { Tables } from '@/lib/types/supabase'
-import { getPosts } from '@/lib/api/getPosts'
-import { savePost } from '@/lib/api/savePost'
-import { PostFormValues } from '@/lib/schemas/post'
+import { getMemories } from '@/lib/api/getMemories'
+import { saveMemory } from '@/lib/api/saveMemory'
+import { MemoryFormValues } from '@/lib/schemas/memory'
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [posts, setPosts] = useState<Tables<'posts'>[]>([])
-  const [post, setPost] = useState<Tables<'posts'> | null>(null)
+  const [memories, setMemories] = useState<Tables<'memories'>[]>([])
+  const [memory, setMemory] = useState<Tables<'memories'> | null>(null)
 
-  const fetchPosts = async () => {
-    const result = await getPosts()
+  const fetchMemories = async () => {
+    const result = await getMemories()
 
     if (!result.success) {
       console.error('投稿の取得に失敗:', result.error)
       return
     }
 
-    setPosts(result.data || [])
+    setMemories(result.data || [])
   }
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    fetchPosts()
+    fetchMemories()
   }, [])
 
-  const handlEdit = (post: Tables<'posts'>) => {
-    setPost(post)
+  const handlEdit = (memory: Tables<'memories'>) => {
+    setMemory(memory)
     setIsModalOpen(true)
   }
 
-  const handlePost = async (values: PostFormValues) => {
-    const result = await savePost({
+  const handleMemory = async (values: MemoryFormValues) => {
+    const result = await saveMemory({
       id: values?.id,
       title: values.title,
       content: values.content,
@@ -48,7 +48,7 @@ export default function Dashboard() {
     }
 
     // 投稿一覧を再取得
-    await fetchPosts()
+    await fetchMemories()
 
     // モーダルを閉じる
     setIsModalOpen(false)
@@ -61,16 +61,16 @@ export default function Dashboard() {
         忘れたくないものがあるときにすることをここで
       </Button>
       <div className="columns-1 md:columns-3 xl:columns-4 gap-4">
-        {posts.map(post => (
-          <PostCard onEdit={handlEdit} key={post.id} post={post} />
+        {memories.map(memory => (
+          <MemoryCard onEdit={handlEdit} key={memory.id} memory={memory} />
         ))}
       </div>
 
-      <PostModal
+      <MemoryModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
-        onPost={handlePost}
-        post={post}
+        onMemory={handleMemory}
+        memory={memory}
       />
     </main>
   )

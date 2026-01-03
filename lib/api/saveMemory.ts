@@ -1,15 +1,15 @@
-import { PostFormValues } from '@/lib/schemas/post'
+import { MemoryFormValues } from '@/lib/schemas/memory'
 import { createClient } from '@/lib/supabase/client'
 import { ApiResponse } from '@/lib/types/api'
 import { getCurrentUser } from './getCurrentUser'
 
-type SavePostInput = {
+type SaveMemoryInput = {
   id?: number
   title: string
   content: string
 }
 
-export async function savePost(input: SavePostInput): Promise<ApiResponse> {
+export async function saveMemory(input: SaveMemoryInput): Promise<ApiResponse> {
   const supabase = createClient()
 
   // 現在のユーザーを取得
@@ -25,7 +25,7 @@ export async function savePost(input: SavePostInput): Promise<ApiResponse> {
 
   if (input.id) {
     const findResult = await supabase
-      .from('posts')
+      .from('memories')
       .select('*')
       .eq('id', input.id)
       .single()
@@ -34,7 +34,7 @@ export async function savePost(input: SavePostInput): Promise<ApiResponse> {
       return { success: false, error: findResult.error.message }
     }
     if (findResult.data > 0) {
-      const { error } = await supabase.from('posts').update([
+      const { error } = await supabase.from('memories').update([
         {
           title: input.title,
           content: input.content,
@@ -47,7 +47,7 @@ export async function savePost(input: SavePostInput): Promise<ApiResponse> {
     }
   }
 
-  const { error } = await supabase.from('posts').insert([
+  const { error } = await supabase.from('memories').insert([
     {
       title: input.title,
       content: input.content,

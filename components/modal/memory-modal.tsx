@@ -14,46 +14,46 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
-import { postSchema, PostFormValues } from '@/lib/schemas/post'
+import { memorySchema, MemoryFormValues } from '@/lib/schemas/memory'
 import { Tables } from '@/lib/types/supabase'
 
-interface PostModalProps {
+interface MemoryModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onPost: (values: PostFormValues) => void
-  post?: Tables<'posts'> | null
+  onMemory: (values: MemoryFormValues) => void
+  memory?: Tables<'memories'> | null
   onCancel?: () => void
 }
 
-export function PostModal({
+export function MemoryModal({
   open,
   onOpenChange,
-  onPost,
-  post,
+  onMemory,
+  memory,
   onCancel,
-}: PostModalProps) {
-  const form = useForm<PostFormValues>({
-    resolver: zodResolver(postSchema),
+}: MemoryModalProps) {
+  const form = useForm<MemoryFormValues>({
+    resolver: zodResolver(memorySchema),
     defaultValues: {
       title: '',
       content: '',
     },
   })
 
-  // postが変更されたときにフォームの値を更新
+  // memoryが変更されたときにフォームの値を更新
   useEffect(() => {
-    if (post) {
+    if (memory) {
       form.reset({
-        id: post.id,
-        title: post.title || '',
-        content: post.content || '',
+        id: memory.id,
+        title: memory.title || '',
+        content: memory.content || '',
       })
     } else if (!open) {
       // モーダルが閉じたときにフォームをクリア
       form.reset()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [post, open])
+  }, [memory, open])
 
   const handleCancel = () => {
     // フォームの値は削除せず、モーダルを閉じる
@@ -61,9 +61,9 @@ export function PostModal({
     onCancel?.()
   }
 
-  const handleSubmit = (values: PostFormValues) => {
+  const handleSubmit = (values: MemoryFormValues) => {
     // 親にtitleとcontentを返す
-    onPost(values)
+    onMemory(values)
   }
 
   return (
