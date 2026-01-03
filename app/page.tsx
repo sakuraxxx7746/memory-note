@@ -49,8 +49,10 @@ export default function Dashboard() {
 
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold mb-4">ダッシュボード</h1>
-      <Button onClick={() => setIsModalOpen(true)}>＋</Button>
+      <h1 className="text-2xl font-bold mb-4">ここが君の記憶の場所</h1>
+      <Button className="mb-4" onClick={() => setIsModalOpen(true)}>
+        忘れたくないものがあるときにすることをここで
+      </Button>
       <div className="columns-1 md:columns-3 md:max-w-[85%] xl:columns-4 gap-2">
         {posts.map(post => (
           <PostCard key={post.id} post={post} />
