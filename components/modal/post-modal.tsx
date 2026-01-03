@@ -44,11 +44,16 @@ export function PostModal({
   useEffect(() => {
     if (post) {
       form.reset({
+        id: post.id,
         title: post.title || '',
         content: post.content || '',
       })
+    } else if (!open) {
+      // モーダルが閉じたときにフォームをクリア
+      form.reset()
     }
-  }, [post, form])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post, open])
 
   const handleCancel = () => {
     // フォームの値は削除せず、モーダルを閉じる
@@ -59,9 +64,6 @@ export function PostModal({
   const handleSubmit = (values: PostFormValues) => {
     // 親にtitleとcontentを返す
     onPost(values)
-
-    // 投稿後、フォームをリセット
-    // form.reset()
   }
 
   return (
