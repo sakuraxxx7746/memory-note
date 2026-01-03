@@ -55,12 +55,11 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold mb-4">ここが君の記憶の場所</h1>
+    <div className="">
       <Button className="mb-4" onClick={() => setIsModalOpen(true)}>
         忘れたくないものがあるときにすることをここで
       </Button>
-      <div className="columns-1 md:columns-3 xl:columns-4 gap-4">
+      <div className="columns-1 md:columns-3 xl:columns-4 gap-2">
         {memories.map(memory => (
           <MemoryCard onEdit={handlEdit} key={memory.id} memory={memory} />
         ))}
@@ -72,6 +71,6 @@ export default function Dashboard() {
         onMemory={handleMemory}
         memory={memory}
       />
-    </main>
+    </div>
   )
 }

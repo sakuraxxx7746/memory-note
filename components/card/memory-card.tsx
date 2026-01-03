@@ -13,7 +13,7 @@ import { format } from 'date-fns'
 import { Button } from '@/components/ui/button'
 
 interface memoryCardProps {
-  key?: number
+  key?: string
   memory: Tables<'memories'>
   onEdit: (values: Tables<'memories'>) => void
 }

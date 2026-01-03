@@ -89,7 +89,7 @@ export type Database = {
           {
             foreignKeyName: "memory_hashtag_mapping_memory_id_fkey"
             columns: ["memory_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "memories"
             referencedColumns: ["id"]
           },
@@ -100,7 +100,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      save_memory_with_hashtags: {
+        Args: {
+          p_content: string
+          p_memory_id: string
+          p_title: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
