@@ -18,7 +18,7 @@ export default function Dashboard() {
     const result = await getMemories()
 
     if (!result.success) {
-      console.error('投稿の取得に失敗:', result.error)
+      console.log('投稿の取得に失敗:', result.error)
       return
     }
 

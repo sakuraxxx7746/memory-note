@@ -1,7 +1,7 @@
 import * as z from 'zod'
 
 export const memorySchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   title: z.string().min(1, '投稿タイトルを入力してください'),
   content: z
     .string()
