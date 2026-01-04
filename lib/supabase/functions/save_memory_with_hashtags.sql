@@ -46,10 +46,10 @@ BEGIN
     WHERE memory_id = v_memory_id;
   END IF;
 
-  -- ハッシュタグの抽出（#の後、半角スペース・全角スペース・改行以外の文字）
+  -- ハッシュタグの抽出（#の後、半角スペース・全角スペース・改行・#以外の文字）
   SELECT ARRAY(
     SELECT DISTINCT unnest(
-      regexp_matches(p_content, '#([^\s　\n]+)', 'g')
+      regexp_matches(p_content, '#([^\s　\n#]+)', 'g')
     )
   ) INTO v_hashtag_names;
 

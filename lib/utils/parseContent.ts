@@ -4,8 +4,8 @@
  * @returns 分割された文字列の配列
  */
 export function parseContentWithHashtags(content: string): string[] {
-  // #の後、半角スペース・全角スペース・改行以外の文字にマッチ
-  return content.split(/(#[^\s　\n]+)/g)
+  // #の後、半角スペース・全角スペース・改行・#以外の文字にマッチ
+  return content.split(/(#[^\s　\n#]+)/g)
 }
 
 /**
@@ -14,5 +14,5 @@ export function parseContentWithHashtags(content: string): string[] {
  * @returns ハッシュタグならtrue
  */
 export function isHashtag(text: string): boolean {
-  return /^#[^\s　\n]+$/.test(text)
+  return /^#[^\s　\n#]+$/.test(text)
 }
