@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/card'
 import { format } from 'date-fns'
 import { Button } from '@/components/ui/button'
+import HashtagLink from '@/components/atom/hashtag-link'
+import { parseContentWithHashtags, isHashtag } from '@/lib/utils/parseContent'
 
 interface memoryCardProps {
   key?: string
@@ -30,7 +32,12 @@ export default function MemoryCard({
         <CardTitle>{memory.title}</CardTitle>
       </CardHeader>
       <CardContent className="whitespace-pre-wrap">
-        {memory.content}
+        {parseContentWithHashtags(memory.content ?? '').map((part, index) => {
+          if (isHashtag(part)) {
+            return <HashtagLink key={index} name={part.slice(1)} />
+          }
+          return <span key={index}>{part}</span>
+        })}
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-2">
         <CardDescription>

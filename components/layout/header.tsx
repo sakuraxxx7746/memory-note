@@ -7,7 +7,7 @@ export default function Header() {
     <header className="w-full">
       <Link href="/">
         <h1 className="text-2xl font-bold mb-4 cursor-pointer hover:opacity-80">
-          ここが君の記憶の場所
+          Memory Dump
         </h1>
       </Link>
     </header>
