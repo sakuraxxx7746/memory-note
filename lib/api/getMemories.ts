@@ -10,7 +10,6 @@ export async function getMemories(): Promise<
   const { data, error } = await supabase
     .from('memories')
     .select('*')
-
     .order('updated_at', { ascending: false })
   if (error) {
     return { success: false, error: error.message }
@@ -20,7 +19,7 @@ export async function getMemories(): Promise<
 }
 
 export async function getMemoriesByHashtag(
-  hashtagId: string
+  hashtagName: string
 ): Promise<ApiResponse<Tables<'memories'>[]>> {
   const supabase = createClient()
 
@@ -29,10 +28,12 @@ export async function getMemoriesByHashtag(
     .select(
       `
       *,
-      hashtag_mappings!inner(hashtag_id)
+      memory_hashtag_mapping!inner(
+        hashtags!inner(name)
+      )
     `
     )
-    .eq('hashtag_mappings.hashtag_id', hashtagId)
+    .eq('memory_hashtag_mapping.hashtags.name', hashtagName)
     .order('updated_at', { ascending: false })
 
   if (error) {

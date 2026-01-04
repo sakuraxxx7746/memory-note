@@ -5,17 +5,27 @@ import { Button } from '@/components/ui/button'
 import { MemoryModal } from '@/components/modal/memory-modal'
 import MemoryCard from '@/components/card/memory-card'
 import { Tables } from '@/lib/types/supabase'
-import { getMemories } from '@/lib/api/getMemories'
+import { getMemories, getMemoriesByHashtag } from '@/lib/api/getMemories'
 import { saveMemory } from '@/lib/api/saveMemory'
 import { MemoryFormValues } from '@/lib/schemas/memory'
+import { useSearchParams } from 'next/navigation'
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [memories, setMemories] = useState<Tables<'memories'>[]>([])
   const [memory, setMemory] = useState<Tables<'memories'> | null>(null)
 
+  const searchParams = useSearchParams()
+  const hashtag = searchParams.get('tag')
+
   const fetchMemories = async () => {
-    const result = await getMemories()
+    let result
+
+    if (hashtag) {
+      result = await getMemoriesByHashtag(hashtag)
+    } else {
+      result = await getMemories()
+    }
 
     if (!result.success) {
       console.log('投稿の取得に失敗:', result.error)
@@ -26,9 +36,9 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchMemories()
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hashtag])
 
   const handlEdit = (memory: Tables<'memories'>) => {
     setMemory(memory)

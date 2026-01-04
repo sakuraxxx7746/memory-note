@@ -3,7 +3,7 @@
 import { getHashtags } from '@/lib/api/getHashtags'
 import { useState, useEffect } from 'react'
 import { Tables } from '@/lib/types/supabase'
-import { Label } from '@radix-ui/react-label'
+import HashtagLink from '@/components/atom/hashtag-link'
 
 interface RightSidebarProps {
   className?: string
@@ -23,14 +23,13 @@ export default function RightSidebar({ className }: RightSidebarProps) {
       setHashtags(result.data || [])
     }
     fetchHashtags()
-  })
+  }, [])
+
   return (
     <div className={`${className} `}>
-      <h2 className="text-lg font-bold mb-2">ハッシュタグ</h2>
+      <h2 className="text-lg font-bold mb-1">ハッシュタグ</h2>
       {hashtags.map(hashtag => (
-        <Label key={hashtag.id} className="m-1">
-          #{hashtag.name}
-        </Label>
+        <HashtagLink key={hashtag.id} name={hashtag.name} />
       ))}
     </div>
   )

@@ -56,15 +56,20 @@ BEGIN
   -- ハッシュタグの保存とマッピング
   FOREACH v_hashtag_name IN ARRAY v_hashtag_names
   LOOP
-    -- ハッシュタグをupsert（既存なら取得、新規なら作成）
+    -- ハッシュタグをupsert（既存でも新規でもIDを取得）
     INSERT INTO hashtags (name)
     VALUES (v_hashtag_name)
     ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
     RETURNING id INTO v_hashtag_id;
 
-    -- マッピングテーブルに登録
-    INSERT INTO memory_hashtag_mapping (memory_id, hashtag_id)
-    VALUES (v_memory_id, v_hashtag_id);
+    -- マッピングテーブルに登録（既に存在しなければ追加）
+    IF NOT EXISTS (
+      SELECT 1 FROM memory_hashtag_mapping
+      WHERE memory_id = v_memory_id AND hashtag_id = v_hashtag_id
+    ) THEN
+      INSERT INTO memory_hashtag_mapping (memory_id, hashtag_id)
+      VALUES (v_memory_id, v_hashtag_id);
+    END IF;
   END LOOP;
 
   -- 成功を返す
