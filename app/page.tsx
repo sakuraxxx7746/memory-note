@@ -56,8 +56,8 @@ export default function Dashboard() {
 
   return (
     <div className="">
-      <Button className="mb-4" onClick={() => setIsModalOpen(true)}>
-        忘れたくないものがあるときにすることをここで
+      <Button onClick={() => setIsModalOpen(true)} className="w-full mb-2">
+        忘れたくないものがあるときにここで
       </Button>
       <div className="columns-1 md:columns-3 xl:columns-4 gap-2">
         {memories.map(memory => (

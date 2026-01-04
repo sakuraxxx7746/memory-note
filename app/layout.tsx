@@ -16,13 +16,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body>
-        <Header />
-        <div className="flex min-h-screen">
-          <main className="flex-1 md:flex-[8] min-w-0">{children}</main>
-          <aside className="hidden md:block md:flex-[2]">
-            <RightSidebar />
-          </aside>
+      <body className="">
+        <div className="p-4">
+          <Header />
+          <div className="flex min-h-screen">
+            <main className="flex-1 md:flex-[8] min-w-0">{children}</main>
+            <aside className="ml-4 hidden md:block md:flex-[2]">
+              <RightSidebar />
+            </aside>
+          </div>
         </div>
       </body>
     </html>
