@@ -16,11 +16,16 @@ interface memoryCardProps {
   key?: string
   memory: Tables<'memories'>
   onEdit: (values: Tables<'memories'>) => void
+  className?: string
 }
 
-export default function MemoryCard({ memory, onEdit }: memoryCardProps) {
+export default function MemoryCard({
+  memory,
+  onEdit,
+  className,
+}: memoryCardProps) {
   return (
-    <Card className="break-inside-avoid mb-2">
+    <Card className={`break-inside-avoid mb-2 ${className}`}>
       <CardHeader>
         <CardTitle>{memory.title}</CardTitle>
       </CardHeader>

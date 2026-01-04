@@ -61,7 +61,12 @@ export default function Dashboard() {
       </Button>
       <div className="columns-1 md:columns-3 xl:columns-4 gap-2">
         {memories.map(memory => (
-          <MemoryCard onEdit={handlEdit} key={memory.id} memory={memory} />
+          <MemoryCard
+            className="glass-reveal"
+            onEdit={handlEdit}
+            key={memory.id}
+            memory={memory}
+          />
         ))}
       </div>
 
