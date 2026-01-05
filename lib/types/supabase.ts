@@ -82,12 +82,41 @@ export type Database = {
           {
             foreignKeyName: "memory_hashtag_mapping_hashtag_id_fkey"
             columns: ["hashtag_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "hashtags"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "memory_hashtag_mapping_memory_id_fkey"
+            columns: ["memory_id"]
+            isOneToOne: false
+            referencedRelation: "memories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memory_images: {
+        Row: {
+          created_at: string
+          id: number
+          image_url: string | null
+          memory_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          image_url?: string | null
+          memory_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          image_url?: string | null
+          memory_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_images_memory_id_fkey"
             columns: ["memory_id"]
             isOneToOne: false
             referencedRelation: "memories"
