@@ -27,7 +27,7 @@ export default function MemoryCard({
   className,
 }: memoryCardProps) {
   return (
-    <Card className={`break-inside-avoid mb-2 ${className}`}>
+    <Card className={`group break-inside-avoid mb-2 ${className}`}>
       <CardHeader>
         <CardTitle>{memory.title}</CardTitle>
       </CardHeader>
@@ -39,7 +39,7 @@ export default function MemoryCard({
           return <span key={index}>{part}</span>
         })}
       </CardContent>
-      <CardFooter className="flex flex-col items-start gap-2">
+      <CardFooter className="flex flex-row justify-between items-center">
         <CardDescription>
           {memory.updated_at
             ? format(new Date(memory.updated_at), 'yyyy年MM月dd日') + '更新'
