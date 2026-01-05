@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -16,6 +16,10 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { memorySchema, MemoryFormValues } from '@/lib/schemas/memory'
 import { Tables } from '@/lib/types/supabase'
+import { ImageItem } from '@/lib/types/image'
+import { useDropzone } from 'react-dropzone'
+import ImagePreview from './image-preview'
+import { compressImage } from '@/lib/utils/image-compression'
 
 interface MemoryModalProps {
   open: boolean
@@ -32,6 +36,35 @@ export function MemoryModal({
   memory,
   onCancel,
 }: MemoryModalProps) {
+  const maxImageSize = 2
+  const [images, setImages] = useState<ImageItem[]>([])
+
+  const onDrop = async (acceptedFiles: File[]) => {
+    if (images.length + acceptedFiles.length > maxImageSize) {
+      alert('画像は最大2枚までアップロード可能です。')
+      return
+    }
+
+    const compressed = await Promise.all(
+      acceptedFiles.map(file => compressImage(file))
+    )
+
+    const newImages: ImageItem[] = compressed.map(file => ({
+      type: 'new',
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }))
+
+    setImages(prev => [...prev, ...newImages])
+  }
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: { 'image/*': [] },
+    maxFiles: maxImageSize - images.length,
+    noClick: true, // クリックでファイル選択を無効化（ドロップのみ）
+  })
+
   const form = useForm<MemoryFormValues>({
     resolver: zodResolver(memorySchema),
     defaultValues: {
@@ -94,12 +127,37 @@ export function MemoryModal({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
-                      placeholder="内容"
-                      maxLength={1000}
-                      rows={8}
-                      {...field}
-                    />
+                    <div
+                      {...getRootProps()}
+                      className="border-2 border-dashed border-transparent hover:border-gray-300 rounded-md transition-colors"
+                    >
+                      <input {...getInputProps()} />
+                      <Textarea
+                        placeholder="内容（画像をここにドロップ）"
+                        maxLength={1000}
+                        rows={8}
+                        {...field}
+                      />
+                      {images.length > 0 && (
+                        <div className="mt-2 flex gap-2 px-3 pb-2">
+                          {images.map((image, index) => (
+                            <ImagePreview
+                              key={index}
+                              imageUrl={
+                                image.type === 'new'
+                                  ? image.previewUrl
+                                  : image.url
+                              }
+                              onRemove={() =>
+                                setImages(prev =>
+                                  prev.filter((_, i) => i !== index)
+                                )
+                              }
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <p className="text-sm text-gray-500">
                     {field.value.length} / 1000文字

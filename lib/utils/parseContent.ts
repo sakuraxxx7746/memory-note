@@ -1,3 +1,5 @@
+import imageCompression from 'browser-image-compression'
+
 /**
  * テキストをハッシュタグと通常テキストに分割
  * @param content - パースするテキスト
@@ -15,4 +17,13 @@ export function parseContentWithHashtags(content: string): string[] {
  */
 export function isHashtag(text: string): boolean {
   return /^#[^\s　\n#]+$/.test(text)
+}
+
+export async function compressImage(file: File) {
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+  }
+  return await imageCompression(file, options)
 }
