@@ -72,6 +72,12 @@ BEGIN
     END IF;
   END LOOP;
 
+  -- マッピングが存在しないハッシュタグを削除
+  DELETE FROM hashtags
+  WHERE id NOT IN (
+    SELECT DISTINCT hashtag_id FROM memory_hashtag_mapping
+  );
+
   -- 成功を返す
   RETURN json_build_object(
     'success', true,

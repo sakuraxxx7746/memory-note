@@ -9,7 +9,7 @@ export default function HashtagLink({ name, className }: HashtagLinkProps) {
   return (
     <Link
       href={`/?tag=${name}`}
-      className={`inline-block mr-1 text-sm hover:underline ${className || ''}`}
+      className={`inline-block mr-1 text-sm text-slate-500 hover:text-slate-700 hover:underline ${className || ''}`}
     >
       #{name}
     </Link>
