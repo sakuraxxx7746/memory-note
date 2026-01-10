@@ -46,10 +46,12 @@ export default function Dashboard() {
   }
 
   const handleMemory = async (values: MemoryFormValues) => {
+    console.log('Dashboard handleMemory values:', values)
     const result = await saveMemory({
       id: values?.id,
       title: values.title,
       content: values.content,
+      images: values.images || undefined,
     })
 
     if (!result.success) {

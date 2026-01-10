@@ -1,4 +1,6 @@
-export type Json =
+Need to install the following packages:
+supabase@2.72.3
+Ok to proceed? (y) export type Json =
   | string
   | number
   | boolean

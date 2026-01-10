@@ -56,6 +56,7 @@ export function MemoryModal({
     }))
 
     setImages(prev => [...prev, ...newImages])
+    // form.setValue('images', newImages)
   }
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -105,6 +106,7 @@ export function MemoryModal({
         <DialogHeader>
           <DialogTitle>投稿</DialogTitle>
         </DialogHeader>
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
@@ -127,44 +129,57 @@ export function MemoryModal({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <div
-                      {...getRootProps()}
-                      className="border-2 border-dashed border-transparent hover:border-gray-300 rounded-md transition-colors"
-                    >
-                      <input {...getInputProps()} />
-                      <Textarea
-                        placeholder="内容（画像をここにドロップ）"
-                        maxLength={1000}
-                        rows={8}
-                        {...field}
-                      />
-                      {images.length > 0 && (
-                        <div className="mt-2 flex gap-2 px-3 pb-2">
-                          {images.map((image, index) => (
-                            <ImagePreview
-                              key={index}
-                              imageUrl={
-                                image.type === 'new'
-                                  ? image.previewUrl
-                                  : image.url
-                              }
-                              onRemove={() =>
-                                setImages(prev =>
-                                  prev.filter((_, i) => i !== index)
-                                )
-                              }
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <Textarea
+                      placeholder="内容（画像をここにドロップ）"
+                      maxLength={1000}
+                      rows={8}
+                      {...field}
+                    />
                   </FormControl>
-                  <p className="text-sm text-gray-500">
-                    {field.value.length} / 1000文字
-                  </p>
                 </FormItem>
               )}
             />
+
+            {/* 画像選択ボタン */}
+            <div className="space-y-2">
+              {images.length < maxImageSize && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const input = document.createElement('input')
+                    input.type = 'file'
+                    input.accept = 'image/*'
+                    input.multiple = true
+                    input.onchange = async e => {
+                      const files = (e.target as HTMLInputElement).files
+                      if (files) {
+                        await onDrop(Array.from(files))
+                      }
+                    }
+                    input.click()
+                  }}
+                >
+                  画像を追加
+                </Button>
+              )}
+            </div>
+
+            {images.length > 0 && (
+              <div className="flex gap-2">
+                {images.map((image, index) => (
+                  <ImagePreview
+                    key={index}
+                    imageUrl={
+                      image.type === 'new' ? image.previewUrl : image.url
+                    }
+                    onRemove={() =>
+                      setImages(prev => prev.filter((_, i) => i !== index))
+                    }
+                  />
+                ))}
+              </div>
+            )}
             <DialogFooter>
               <Button type="button" variant="outline" onClick={handleCancel}>
                 キャンセル
