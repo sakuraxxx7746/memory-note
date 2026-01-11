@@ -1,5 +1,5 @@
 Need to install the following packages:
-supabase@2.72.3
+supabase@2.72.4
 Ok to proceed? (y) export type Json =
   | string
   | number

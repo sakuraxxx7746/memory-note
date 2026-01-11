@@ -1,10 +1,11 @@
 -- メモリーをハッシュタグと共に保存するプロシージャ
 -- 新規作成と更新の両方を処理し、ハッシュタグの抽出・保存・マッピングを行う
 
-CREATE OR REPLACE FUNCTION save_memory_with_hashtags(
+CREATE OR REPLACE FUNCTION save_memory(
   p_memory_id UUID,
   p_title TEXT,
   p_content TEXT,
+  p_image_urls TEXT[],
   p_user_id UUID
 )
 RETURNS JSON
@@ -77,6 +78,14 @@ BEGIN
   WHERE id NOT IN (
     SELECT DISTINCT hashtag_id FROM memory_hashtag_mapping
   );
+
+  -- 画像URLを一括削除
+  DELETE FROM memory_images
+  WHERE memory_id = v_memory_id;
+
+  -- 画像URLを一括登録
+  INSERT INTO memory_images (memory_id, image_url)
+  SELECT v_memory_id, unnest(p_image_urls);
 
   -- 成功を返す
   RETURN json_build_object(

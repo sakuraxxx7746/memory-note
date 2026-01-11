@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/client'
 import { ApiResponse } from '@/lib/types/api'
 import { getCurrentUser } from './getCurrentUser'
 import { ImageItem } from '@/lib/types/image'
+import { ar } from 'zod/v4/locales'
 
 type SaveMemoryInput = {
   id?: string
@@ -9,10 +10,9 @@ type SaveMemoryInput = {
   content: string
   images?: ImageItem[]
 }
+const supabase = createClient()
 
 export async function saveMemory(input: SaveMemoryInput): Promise<ApiResponse> {
-  const supabase = createClient()
-
   console.log('saveMemory input:', input)
   try {
     // 現在のユーザーを取得
@@ -27,14 +27,45 @@ export async function saveMemory(input: SaveMemoryInput): Promise<ApiResponse> {
     }
 
     console.log('saveMemory userResult:', userResult)
+
+    let memoryId = input.id
+    if (!memoryId) {
+      const { data, error } = await supabase
+        .from('memories')
+        .insert({})
+        .select('id')
+        .single()
+      if (error) {
+        console.error('メモリ作成エラー:', error)
+        return { success: false, error: error.message }
+      }
+      memoryId = data.id
+    }
+
+    // 画像アップロード用の関数を呼び出し
+    const uploadedImageUrls = await uploadImages(
+      userResult.data.id,
+      memoryId,
+      input.images || []
+    )
+
+    if (uploadedImageUrls instanceof Error) {
+      return { success: false, error: uploadedImageUrls.message }
+    }
     // プロシージャを呼び出し
-    const { data, error } = await supabase.rpc('save_memory_with_hashtags', {
-      p_memory_id: input.id || null,
+    // const { data, error } = await supabase.rpc('save_memory_with_hashtags', {
+    //   p_memory_id: input.id || null,
+    //   p_title: input.title,
+    //   p_content: input.content,
+    //   p_user_id: userResult.data.id,
+    // })
+    const { data, error } = await supabase.rpc('save_memory', {
+      p_memory_id: memoryId || null,
       p_title: input.title,
       p_content: input.content,
+      p_image_urls: uploadedImageUrls,
       p_user_id: userResult.data.id,
     })
-
     if (error) {
       console.error('プロシージャ実行エラー:', error)
       return { success: false, error: error.message }
@@ -45,47 +76,14 @@ export async function saveMemory(input: SaveMemoryInput): Promise<ApiResponse> {
       return { success: false, error: data.error }
     }
 
-    const memoryId = data.memory_id
     console.log('saveMemory memoryId:', memoryId)
-    // 画像のアップロード処理
-    if (input.images && input.images.length > 0) {
-      // 既存の画像を削除（編集時）
-      if (input.id) {
-        await supabase.from('memory_images').delete().eq('memory_id', input.id)
-      }
 
-      // 新規画像のみアップロード
-      const newImages = input.images.filter(img => img.type === 'new')
-      console.log('saveMemory memoryId:', newImages)
-      for (let i = 0; i < newImages.length; i++) {
-        const image = newImages[i]
-        const fileName = `${memoryId}_${i}_${Date.now()}.jpg`
-        const filePath = `memories/${userResult.data.id}/${fileName}`
-
-        // Storageにアップロード
-        const { error: uploadError } = await supabase.storage
-          .from('memory-images')
-          .upload(filePath, image.file)
-
-        if (uploadError) {
-          console.error('画像アップロードエラー:', uploadError)
-          continue
-        }
-
-        // 公開URLを取得
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from('memory-images').getPublicUrl(filePath)
-        console.log('saveMemory publicUrl:', publicUrl)
-
-        // memory_imagesテーブルに保存
-        await supabase.from('memory_images').insert({
-          memory_id: memoryId,
-          image_url: publicUrl,
-          display_order: i + 1,
-        })
-      }
-    }
+    // memory_imagesテーブルに保存
+    // await supabase.from('memory_images').insert({
+    //   memory_id: memoryId,
+    //   image_url: publicUrl,
+    //   display_order: i + 1,
+    // })
 
     return { success: true }
   } catch (error) {
@@ -95,4 +93,61 @@ export async function saveMemory(input: SaveMemoryInput): Promise<ApiResponse> {
       error: error instanceof Error ? error.message : '保存に失敗しました',
     }
   }
+}
+
+const uploadImages = async (
+  userId: string,
+  memoryId: string | undefined,
+  inputImages: ImageItem[]
+): Promise<string[] | Error> => {
+  let publicUrls: string[] = []
+  // 画像のアップロード処理
+  if (!(inputImages && inputImages.length > 0)) {
+    return publicUrls
+  }
+
+  publicUrls = inputImages.flatMap(img =>
+    img.type === 'existing' ? [img.url] : []
+  )
+  // 既存の画像を削除（編集時）
+  // if (input.id) {
+  //   await supabase.from('memory_images').delete().eq('memory_id', input.id)
+  // }
+
+  // 新規画像のみアップロード
+  const newImages = inputImages.filter(img => img.type === 'new')
+  console.log('saveMemory memoryId:', newImages)
+  for (let i = 0; i < newImages.length; i++) {
+    const image = newImages[i]
+    const fileName = `${i}_${Date.now()}.jpg`
+    const filePath = `memories/${userId}/${memoryId}/${fileName}`
+
+    // Storageにアップロード
+    const { error: uploadError } = await supabase.storage
+      .from('memory-images')
+      .upload(filePath, image.file)
+
+    if (uploadError) {
+      console.error('画像アップロードエラー:', uploadError)
+      return uploadError
+    }
+
+    // 公開URLを取得
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from('memory-images').getPublicUrl(filePath)
+    console.log('saveMemory publicUrl:', publicUrl)
+
+    publicUrls.push(publicUrl)
+    // memory_imagesテーブルに保存
+    // const { error: insertError } = await supabase.from('memory_images').insert({
+    //   memory_id: memoryId,
+    //   image_url: publicUrl,
+    //   display_order: i + 1,
+    // })
+    // if (insertError) {
+    //   console.error('画像情報保存エラー:', insertError)
+    // }
+  }
+  return publicUrls
 }

@@ -56,7 +56,6 @@ export function MemoryModal({
     }))
 
     setImages(prev => [...prev, ...newImages])
-    // form.setValue('images', newImages)
   }
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -96,8 +95,11 @@ export function MemoryModal({
   }
 
   const handleSubmit = (values: MemoryFormValues) => {
-    // 親にtitleとcontentを返す
-    onMemory(values)
+    // imagesステートをフォームの値に追加して親に渡す
+    onMemory({
+      ...values,
+      images: images.length > 0 ? images : undefined,
+    })
   }
 
   return (
