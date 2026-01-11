@@ -1,6 +1,4 @@
-Need to install the following packages:
-supabase@2.72.4
-Ok to proceed? (y) export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -131,6 +129,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      save_memory: {
+        Args: {
+          p_content: string
+          p_image_urls: string[]
+          p_memory_id: string
+          p_title: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       save_memory_with_hashtags: {
         Args: {
           p_content: string

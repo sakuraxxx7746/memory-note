@@ -18,7 +18,7 @@ import { memorySchema, MemoryFormValues } from '@/lib/schemas/memory'
 import { Tables } from '@/lib/types/supabase'
 import { ImageItem } from '@/lib/types/image'
 import { useDropzone } from 'react-dropzone'
-import ImagePreview from './image-preview'
+import ModalImagePreview from './image/modal-image-preview'
 import { compressImage } from '@/lib/utils/image-compression'
 
 interface MemoryModalProps {
@@ -57,13 +57,6 @@ export function MemoryModal({
 
     setImages(prev => [...prev, ...newImages])
   }
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: { 'image/*': [] },
-    maxFiles: maxImageSize - images.length,
-    noClick: true, // クリックでファイル選択を無効化（ドロップのみ）
-  })
 
   const form = useForm<MemoryFormValues>({
     resolver: zodResolver(memorySchema),
@@ -170,7 +163,7 @@ export function MemoryModal({
             {images.length > 0 && (
               <div className="flex gap-2">
                 {images.map((image, index) => (
-                  <ImagePreview
+                  <ModalImagePreview
                     key={index}
                     imageUrl={
                       image.type === 'new' ? image.previewUrl : image.url

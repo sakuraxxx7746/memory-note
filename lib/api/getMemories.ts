@@ -7,10 +7,14 @@ export async function getMemories(): Promise<
 > {
   const supabase = createClient()
 
-  const { data, error } = await supabase
-    .from('memories')
-    .select('*')
-    .order('updated_at', { ascending: false })
+  const { data, error } = await supabase.from('memories').select(
+    `*,
+      memory_images (*)
+    `
+  )
+  // .order('updated_at', { ascending: false })
+  // .order('updated_at', { ascending: false, foreignTable: 'memories' })
+  console.log('getMemories data:', data)
   if (error) {
     return { success: false, error: error.message }
   }

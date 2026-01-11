@@ -13,11 +13,12 @@ import { format } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import HashtagLink from '@/components/atom/hashtag-link'
 import { parseContentWithHashtags, isHashtag } from '@/lib/utils/parseContent'
-
+import CardImagePreview from './card-image-preview'
+import { MemoryWithMemoryImagesType } from '@/lib/types/api'
 interface memoryCardProps {
   key?: string
-  memory: Tables<'memories'>
-  onEdit: (values: Tables<'memories'>) => void
+  memory: MemoryWithMemoryImagesType
+  onEdit: (values: MemoryWithMemoryImagesType) => void
   className?: string
 }
 
@@ -39,6 +40,9 @@ export default function MemoryCard({
           return <span key={index}>{part}</span>
         })}
       </CardContent>
+      {memory.memory_images?.map(image => (
+        <CardImagePreview key={image.id} imageUrl={image?.image_url} />
+      ))}
       <CardFooter className="flex flex-row justify-between items-center">
         <CardDescription>
           {memory.updated_at

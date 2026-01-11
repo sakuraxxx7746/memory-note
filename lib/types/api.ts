@@ -1,3 +1,5 @@
+import { Tables } from './supabase'
+
 // API成功レスポンス
 export type ApiSuccessResponse<T = void> = {
   success: true
@@ -12,3 +14,7 @@ export type ApiErrorResponse = {
 
 // API統合レスポンス
 export type ApiResponse<T = void> = ApiSuccessResponse<T> | ApiErrorResponse
+
+export type MemoryWithMemoryImagesType = Tables<'memories'> & {
+  memory_images?: Tables<'memory_images'>[]
+}

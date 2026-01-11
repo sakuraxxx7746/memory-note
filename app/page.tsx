@@ -71,7 +71,7 @@ export default function Dashboard() {
       <Button onClick={() => setIsModalOpen(true)} className="w-full mb-2">
         忘れたくないものがあるときにここで
       </Button>
-      <div className="columns-1 md:columns-3 xl:columns-4 gap-2">
+      <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-2">
         {memories.map(memory => (
           <MemoryCard
             className="glass-reveal"
