@@ -21,10 +21,12 @@ import { useDropzone } from 'react-dropzone'
 import ModalImagePreview from './image/modal-image-preview'
 import { compressImage } from '@/lib/utils/image-compression'
 import { MemoryWithMemoryImagesType } from '@/lib/types/api'
+import { saveMemory } from '@/lib/api/saveMemory'
+
 interface MemoryModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onMemory: (values: MemoryFormValues) => void
+  onMemory: () => Promise<void>
   memory: MemoryWithMemoryImagesType | null
   onCancel?: () => void
 }
@@ -97,12 +99,26 @@ export function MemoryModal({
     onCancel?.()
   }
 
-  const handleSubmit = (values: MemoryFormValues) => {
+  const handleSubmit = async (values: MemoryFormValues) => {
+    console.log('handleSubmit values:', values)
     // imagesステートをフォームの値に追加して親に渡す
-    onMemory({
+    const formData = {
       ...values,
       images: images.length > 0 ? images : undefined,
+    }
+    console.log('handleSubmit added images:', images)
+    const result = await saveMemory({
+      id: formData?.id,
+      title: formData.title,
+      content: formData.content,
+      images: formData.images || undefined,
     })
+
+    if (!result.success) {
+      alert(`投稿の保存に失敗しました: ${result.error}`)
+      return
+    }
+    onMemory()
   }
 
   return (

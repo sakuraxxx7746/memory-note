@@ -1,6 +1,5 @@
 'use client'
 
-import { Tables } from '@/lib/types/supabase'
 import {
   Card,
   CardHeader,

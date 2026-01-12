@@ -6,8 +6,6 @@ import { MemoryModal } from '@/components/modal/memory-modal'
 import MemoryCard from '@/components/card/memory-card'
 import { Tables } from '@/lib/types/supabase'
 import { getMemories, getMemoriesByHashtag } from '@/lib/api/getMemories'
-import { saveMemory } from '@/lib/api/saveMemory'
-import { MemoryFormValues } from '@/lib/schemas/memory'
 import { useSearchParams } from 'next/navigation'
 
 export default function Dashboard() {
@@ -45,20 +43,7 @@ export default function Dashboard() {
     setIsModalOpen(true)
   }
 
-  const handleMemory = async (values: MemoryFormValues) => {
-    console.log('Dashboard handleMemory values:', values)
-    const result = await saveMemory({
-      id: values?.id,
-      title: values.title,
-      content: values.content,
-      images: values.images || undefined,
-    })
-
-    if (!result.success) {
-      alert(`投稿の保存に失敗しました: ${result.error}`)
-      return
-    }
-
+  const handleMemory = async () => {
     // 投稿一覧を再取得
     await fetchMemories()
 
