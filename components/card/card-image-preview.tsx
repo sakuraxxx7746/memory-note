@@ -14,7 +14,7 @@ export default function CardImagePreview({
         alt="プレビュー"
         width={128}
         height={128}
-        className="h-32 w-32 object-cover rounded-md border"
+        className="h-18 w-18 object-cover rounded-xs border"
         unoptimized
       />
     </div>

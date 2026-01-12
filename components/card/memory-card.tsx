@@ -39,10 +39,14 @@ export default function MemoryCard({
           }
           return <span key={index}>{part}</span>
         })}
+        {memory.memory_images && memory.memory_images?.length > 0 && (
+          <div className="mt-2 flex gap-2 items-center">
+            {memory.memory_images.map(image => (
+              <CardImagePreview key={image.id} imageUrl={image?.image_url} />
+            ))}
+          </div>
+        )}
       </CardContent>
-      {memory.memory_images?.map(image => (
-        <CardImagePreview key={image.id} imageUrl={image?.image_url} />
-      ))}
       <CardFooter className="flex flex-row justify-between items-center">
         <CardDescription>
           {memory.updated_at

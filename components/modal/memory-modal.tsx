@@ -174,17 +174,21 @@ export function MemoryModal({
               )}
             </div>
 
-            <div className="flex gap-2">
-              {images.map((image, index) => (
-                <ModalImagePreview
-                  key={index}
-                  imageUrl={image.type === 'new' ? image.previewUrl : image.url}
-                  onRemove={() =>
-                    setImages(prev => prev.filter((_, i) => i !== index))
-                  }
-                />
-              ))}
-            </div>
+            {images.length > 0 && (
+              <div className="flex gap-2">
+                {images.map((image, index) => (
+                  <ModalImagePreview
+                    key={index}
+                    imageUrl={
+                      image.type === 'new' ? image.previewUrl : image.url
+                    }
+                    onRemove={() =>
+                      setImages(prev => prev.filter((_, i) => i !== index))
+                    }
+                  />
+                ))}
+              </div>
+            )}
             <DialogFooter>
               <Button type="button" variant="outline" onClick={handleCancel}>
                 キャンセル
