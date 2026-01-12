@@ -68,30 +68,22 @@ export function MemoryModal({
     },
   })
 
-  // memoryが変更されたときにフォームの値を更新
   useEffect(() => {
-    if (memory) {
-      form.reset({
-        id: memory.id,
-        title: memory.title || '',
-        content: memory.content || '',
-      })
-      if (memory?.memory_images) {
-        const existingImages: ImageItem[] = memory.memory_images.map(
-          memory_image => ({
-            type: 'existing',
-            id: memory.id,
-            url: memory_image.image_url ?? '',
-          })
-        )
-        setImages(existingImages)
-      }
-    } else if (!open) {
-      // モーダルが閉じたときにフォームをクリア
-      form.reset()
-    }
+    form.reset({
+      id: memory?.id,
+      title: memory?.title ?? '',
+      content: memory?.content ?? '',
+    })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [memory, open])
+    setImages(
+      memory?.memory_images?.map(mi => ({
+        type: 'existing',
+        id: memory.id,
+        url: mi.image_url ?? '',
+      })) ?? []
+    )
+  }, [memory, form])
 
   const handleCancel = () => {
     // フォームの値は削除せず、モーダルを閉じる

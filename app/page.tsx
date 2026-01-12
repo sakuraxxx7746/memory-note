@@ -7,6 +7,7 @@ import MemoryCard from '@/components/card/memory-card'
 import { Tables } from '@/lib/types/supabase'
 import { getMemories, getMemoriesByHashtag } from '@/lib/api/getMemories'
 import { useSearchParams } from 'next/navigation'
+import { set } from 'zod'
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -49,11 +50,17 @@ export default function Dashboard() {
 
     // モーダルを閉じる
     setIsModalOpen(false)
+    setMemory(null)
+  }
+
+  const openCreateModal = () => {
+    setMemory(null)
+    setIsModalOpen(true)
   }
 
   return (
     <div className="">
-      <Button onClick={() => setIsModalOpen(true)} className="w-full mb-2">
+      <Button onClick={openCreateModal} className="w-full mb-2">
         忘れたくないものがあるときにここで
       </Button>
       <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-2">
