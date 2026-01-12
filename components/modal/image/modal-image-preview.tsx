@@ -10,7 +10,7 @@ interface ModalImagePreviewProps {
 
 export default function ModalImagePreview({
   imageUrl,
-  isEditable,
+  isEditable = true,
   onRemove,
 }: ModalImagePreviewProps) {
   return (

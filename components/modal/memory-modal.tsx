@@ -20,12 +20,12 @@ import { ImageItem } from '@/lib/types/image'
 import { useDropzone } from 'react-dropzone'
 import ModalImagePreview from './image/modal-image-preview'
 import { compressImage } from '@/lib/utils/image-compression'
-
+import { MemoryWithMemoryImagesType } from '@/lib/types/api'
 interface MemoryModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onMemory: (values: MemoryFormValues) => void
-  memory?: Tables<'memories'> | null
+  memory: MemoryWithMemoryImagesType | null
   onCancel?: () => void
 }
 
@@ -38,6 +38,20 @@ export function MemoryModal({
 }: MemoryModalProps) {
   const maxImageSize = 2
   const [images, setImages] = useState<ImageItem[]>([])
+
+  // 登録済み画像をstateに保存
+  useEffect(() => {
+    if (memory?.memory_images) {
+      const existingImages: ImageItem[] = memory.memory_images.map(
+        memory_image => ({
+          type: 'existing',
+          id: memory.id,
+          url: memory_image.image_url ?? '',
+        })
+      )
+      setImages(existingImages)
+    }
+  }, [memory])
 
   const onDrop = async (acceptedFiles: File[]) => {
     if (images.length + acceptedFiles.length > maxImageSize) {
@@ -160,21 +174,17 @@ export function MemoryModal({
               )}
             </div>
 
-            {images.length > 0 && (
-              <div className="flex gap-2">
-                {images.map((image, index) => (
-                  <ModalImagePreview
-                    key={index}
-                    imageUrl={
-                      image.type === 'new' ? image.previewUrl : image.url
-                    }
-                    onRemove={() =>
-                      setImages(prev => prev.filter((_, i) => i !== index))
-                    }
-                  />
-                ))}
-              </div>
-            )}
+            <div className="flex gap-2">
+              {images.map((image, index) => (
+                <ModalImagePreview
+                  key={index}
+                  imageUrl={image.type === 'new' ? image.previewUrl : image.url}
+                  onRemove={() =>
+                    setImages(prev => prev.filter((_, i) => i !== index))
+                  }
+                />
+              ))}
+            </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={handleCancel}>
                 キャンセル
