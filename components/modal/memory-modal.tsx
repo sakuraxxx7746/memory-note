@@ -39,20 +39,6 @@ export function MemoryModal({
   const maxImageSize = 2
   const [images, setImages] = useState<ImageItem[]>([])
 
-  // 登録済み画像をstateに保存
-  useEffect(() => {
-    if (memory?.memory_images) {
-      const existingImages: ImageItem[] = memory.memory_images.map(
-        memory_image => ({
-          type: 'existing',
-          id: memory.id,
-          url: memory_image.image_url ?? '',
-        })
-      )
-      setImages(existingImages)
-    }
-  }, [memory])
-
   const onDrop = async (acceptedFiles: File[]) => {
     if (images.length + acceptedFiles.length > maxImageSize) {
       alert('画像は最大2枚までアップロード可能です。')
@@ -88,6 +74,16 @@ export function MemoryModal({
         title: memory.title || '',
         content: memory.content || '',
       })
+      if (memory?.memory_images) {
+        const existingImages: ImageItem[] = memory.memory_images.map(
+          memory_image => ({
+            type: 'existing',
+            id: memory.id,
+            url: memory_image.image_url ?? '',
+          })
+        )
+        setImages(existingImages)
+      }
     } else if (!open) {
       // モーダルが閉じたときにフォームをクリア
       form.reset()
