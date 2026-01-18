@@ -98,18 +98,21 @@ export type Database = {
       memory_images: {
         Row: {
           created_at: string
+          file_name: string | null
           id: number
           image_url: string | null
           memory_id: string | null
         }
         Insert: {
           created_at?: string
+          file_name?: string | null
           id?: number
           image_url?: string | null
           memory_id?: string | null
         }
         Update: {
           created_at?: string
+          file_name?: string | null
           id?: number
           image_url?: string | null
           memory_id?: string | null
@@ -132,16 +135,7 @@ export type Database = {
       save_memory: {
         Args: {
           p_content: string
-          p_image_urls: string[]
-          p_memory_id: string
-          p_title: string
-          p_user_id: string
-        }
-        Returns: Json
-      }
-      save_memory_with_hashtags: {
-        Args: {
-          p_content: string
+          p_file_names: string[]
           p_memory_id: string
           p_title: string
           p_user_id: string

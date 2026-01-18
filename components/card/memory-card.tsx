@@ -14,6 +14,8 @@ import HashtagLink from '@/components/atom/hashtag-link'
 import { parseContentWithHashtags, isHashtag } from '@/lib/utils/parseContent'
 import CardImagePreview from './card-image-preview'
 import { MemoryWithMemoryImagesType } from '@/lib/types/api'
+import { getImageUrl } from '@/lib/supabase/storage'
+
 interface memoryCardProps {
   key?: string
   memory: MemoryWithMemoryImagesType
@@ -40,9 +42,19 @@ export default function MemoryCard({
         })}
         {memory.memory_images && memory.memory_images?.length > 0 && (
           <div className="mt-2 flex gap-2 items-center">
-            {memory.memory_images.map(image => (
-              <CardImagePreview key={image.id} imageUrl={image?.image_url} />
-            ))}
+            {memory.memory_images.map(
+              image =>
+                image.file_name && (
+                  <CardImagePreview
+                    key={image.id}
+                    imageUrl={getImageUrl(
+                      memory.user_id,
+                      memory.id,
+                      image.file_name
+                    )}
+                  />
+                )
+            )}
           </div>
         )}
       </CardContent>

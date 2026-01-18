@@ -44,7 +44,7 @@ export default function Dashboard() {
     setIsModalOpen(true)
   }
 
-  const handleMemory = async () => {
+  const handlePost = async () => {
     // 投稿一覧を再取得
     await fetchMemories()
 
@@ -77,7 +77,7 @@ export default function Dashboard() {
       <MemoryModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
-        onMemory={handleMemory}
+        onPost={handlePost}
         memory={memory}
       />
     </div>

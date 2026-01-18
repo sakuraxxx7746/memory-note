@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION save_memory(
   p_memory_id UUID,
   p_title TEXT,
   p_content TEXT,
-  p_image_urls TEXT[],
+  p_file_names TEXT[],
   p_user_id UUID
 )
 RETURNS JSON
@@ -84,8 +84,8 @@ BEGIN
   WHERE memory_id = v_memory_id;
 
   -- 画像URLを一括登録
-  INSERT INTO memory_images (memory_id, image_url)
-  SELECT v_memory_id, unnest(p_image_urls);
+  INSERT INTO memory_images (memory_id, files_name)
+  SELECT v_memory_id, unnest(p_file_names);
 
   -- 成功を返す
   RETURN json_build_object(

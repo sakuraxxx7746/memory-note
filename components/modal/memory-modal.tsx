@@ -22,11 +22,13 @@ import ModalImagePreview from './image/modal-image-preview'
 import { compressImage } from '@/lib/utils/image-compression'
 import { MemoryWithMemoryImagesType } from '@/lib/types/api'
 import { saveMemory } from '@/lib/api/saveMemory'
+import { deleteMemory } from '@/lib/api/deleteMemory'
+import { getImageUrl } from '@/lib/supabase/storage'
 
 interface MemoryModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onMemory: () => Promise<void>
+  onPost: () => Promise<void>
   memory: MemoryWithMemoryImagesType | null
   onCancel?: () => void
 }
@@ -34,7 +36,7 @@ interface MemoryModalProps {
 export function MemoryModal({
   open,
   onOpenChange,
-  onMemory,
+  onPost,
   memory,
   onCancel,
 }: MemoryModalProps) {
@@ -80,7 +82,7 @@ export function MemoryModal({
       memory?.memory_images?.map(mi => ({
         type: 'existing',
         id: memory.id,
-        url: mi.image_url ?? '',
+        url: getImageUrl(memory.user_id, memory.id, mi.file_name ?? ''),
       })) ?? []
     )
   }, [memory, form])
@@ -89,6 +91,15 @@ export function MemoryModal({
     // フォームの値は削除せず、モーダルを閉じる
     onOpenChange(false)
     onCancel?.()
+  }
+
+  const handleDelete = async () => {
+    if (memory) {
+      const result = await deleteMemory(memory)
+      console.log('deleteMemory result:', result)
+    }
+    // フォームの値は削除せず、モーダルを閉じる
+    onOpenChange(false)
   }
 
   const handleSubmit = async (values: MemoryFormValues) => {
@@ -110,7 +121,7 @@ export function MemoryModal({
       alert(`投稿の保存に失敗しました: ${result.error}`)
       return
     }
-    onMemory()
+    onPost()
   }
 
   return (
@@ -194,6 +205,9 @@ export function MemoryModal({
               </div>
             )}
             <DialogFooter>
+              <Button type="button" variant="outline" onClick={handleDelete}>
+                削除
+              </Button>
               <Button type="button" variant="outline" onClick={handleCancel}>
                 キャンセル
               </Button>

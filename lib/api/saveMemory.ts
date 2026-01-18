@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/client'
 import { ApiResponse } from '@/lib/types/api'
 import { getCurrentUser } from './getCurrentUser'
 import { ImageItem } from '@/lib/types/image'
-import { ar } from 'zod/v4/locales'
 
 type SaveMemoryInput = {
   id?: string
@@ -52,11 +51,16 @@ export async function saveMemory(input: SaveMemoryInput): Promise<ApiResponse> {
     if (uploadedImageUrls instanceof Error) {
       return { success: false, error: uploadedImageUrls.message }
     }
+
+    console.log('saveMemory uploadedImageUrls:', uploadedImageUrls)
     const { data, error } = await supabase.rpc('save_memory', {
       p_memory_id: memoryId || null,
       p_title: input.title,
       p_content: input.content,
-      p_image_urls: uploadedImageUrls,
+      p_file_names: uploadedImageUrls.map(url => {
+        const parts = url.split('/')
+        return parts[parts.length - 1]
+      }),
       p_user_id: userResult.data.id,
     })
     if (error) {
