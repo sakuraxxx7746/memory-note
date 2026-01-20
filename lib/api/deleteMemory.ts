@@ -28,11 +28,13 @@ export async function deleteMemory(
 
   console.log('Deleting images from paths:', imagePaths)
   // ストレージから画像を削除
-  const { error: storageError } = await supabase.storage
-    .from('memory-images')
-    .remove(imagePaths)
-  if (storageError) {
-    return { success: false, error: storageError.message }
+  if (imagePaths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from('memory-images')
+      .remove(imagePaths)
+    if (storageError) {
+      return { success: false, error: storageError.message }
+    }
   }
 
   // Memoriesからレコードを削除
