@@ -15,9 +15,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { memorySchema, MemoryFormValues } from '@/lib/schemas/memory'
-import { Tables } from '@/lib/types/supabase'
 import { ImageItem } from '@/lib/types/image'
-import { useDropzone } from 'react-dropzone'
 import ModalImagePreview from './image/modal-image-preview'
 import { compressImage } from '@/lib/utils/image-compression'
 import { MemoryWithMemoryImagesType } from '@/lib/types/api'
@@ -25,7 +23,7 @@ import { saveMemory } from '@/lib/api/saveMemory'
 import { deleteMemory } from '@/lib/api/deleteMemory'
 import { getImageUrl } from '@/lib/supabase/storage'
 
-interface MemoryModalProps {
+interface CreateMemoryModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onPost: () => Promise<void>
@@ -33,13 +31,13 @@ interface MemoryModalProps {
   onCancel?: () => void
 }
 
-export function MemoryModal({
+export function CreateMemoryModal({
   open,
   onOpenChange,
   onPost,
   memory,
   onCancel,
-}: MemoryModalProps) {
+}: CreateMemoryModalProps) {
   const maxImageSize = 2
   const [images, setImages] = useState<ImageItem[]>([])
 

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { MemoryModal } from '@/components/modal/memory-modal'
+import { CreateMemoryModal } from '@/components/modal/create-memory-modal'
 import MemoryCard from '@/components/card/memory-card'
 import { Tables } from '@/lib/types/supabase'
 import { getMemories, getMemoriesByHashtag } from '@/lib/api/getMemories'
 import { useSearchParams } from 'next/navigation'
-import { set } from 'zod'
+import CreateMemoryButton from '@/components/atom/create-memory-button'
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -39,7 +39,12 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hashtag])
 
-  const handlEdit = (memory: Tables<'memories'>) => {
+  const openPostModal = () => {
+    setMemory(null)
+    setIsModalOpen(true)
+  }
+
+  const handleEdit = (memory: Tables<'memories'>) => {
     setMemory(memory)
     setIsModalOpen(true)
   }
@@ -53,33 +58,25 @@ export default function Dashboard() {
     setMemory(null)
   }
 
-  const openCreateModal = () => {
-    setMemory(null)
-    setIsModalOpen(true)
-  }
-
   return (
     <div className="">
-      <Button onClick={openCreateModal} className="w-full mb-2">
-        忘れたくないものがあるときにここで
-      </Button>
       <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-2">
         {memories.map(memory => (
           <MemoryCard
             className="glass-reveal"
-            onEdit={handlEdit}
+            onEdit={handleEdit}
             key={memory.id}
             memory={memory}
           />
         ))}
       </div>
-
-      <MemoryModal
+      <CreateMemoryModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
         onPost={handlePost}
         memory={memory}
-      />
+      />{' '}
+      <CreateMemoryButton onClick={openPostModal} />
     </div>
   )
 }

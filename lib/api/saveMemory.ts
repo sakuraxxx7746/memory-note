@@ -31,7 +31,7 @@ export async function saveMemory(input: SaveMemoryInput): Promise<ApiResponse> {
     if (!memoryId) {
       const { data, error } = await supabase
         .from('memories')
-        .insert({})
+        .insert({ user_id: userResult.data.id })
         .select('id')
         .single()
       if (error) {
