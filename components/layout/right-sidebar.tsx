@@ -27,7 +27,6 @@ export default function RightSidebar({ className }: RightSidebarProps) {
 
   return (
     <div className={`${className} `}>
-      <h2 className="text-lg font-bold mb-1">ハッシュタグ</h2>
       {hashtags.map(hashtag => (
         <HashtagLink key={hashtag.id} name={hashtag.name} />
       ))}
