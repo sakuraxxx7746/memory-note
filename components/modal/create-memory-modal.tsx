@@ -95,8 +95,16 @@ export function CreateMemoryModal({
     if (memory) {
       const result = await deleteMemory(memory)
       console.log('deleteMemory result:', result)
+
+      if (!result.success) {
+        alert(`削除に失敗しました: ${result.error}`)
+        return
+      }
+
+      // 削除成功後に一覧を再取得
+      await onPost()
     }
-    // フォームの値は削除せず、モーダルを閉じる
+    // モーダルを閉じる
     onOpenChange(false)
   }
 
